@@ -1,1 +1,72 @@
+# ==========================================
+#  backend server ve ağ ayarları
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2 # 2 kopya ile sistem güvencesi al
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: senin-docker-kullanici-adin/mern-backend:latest 
+        ports:
+        - containerPort: 5000
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP 
+  selector:
+    app: backend
+  ports:
+  - port: 5000
+    targetPort: 5000
+
+# ==========================================
+# frontend server ve ağ ayarları
+# ==========================================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: senin-docker-kullanici-adin/mern-frontend:latest
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: LoadBalancer # open system
+  selector:
+    app: frontend
+  ports:
+  - port: 80
+    targetPort: 80
