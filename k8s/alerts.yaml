@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mern-app-alerts
+  labels:
+    role: alert-rules
+    prometheus: mern-monitor
+spec:
+  groups:
+  - name: backend-alerts
+    rules:
+    # 1. KURAL: backend çökerse
+    - alert: BackendDown
+      expr: up{job="backend-service"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Kritik Uyarı: Arka Yüz (Backend) Çöktü!"
+        description: "MERN uygulamasının backend servisi 1 dakikadan uzun süredir yanıt vermiyor. Lütfen logları kontrol edin."
+
+    # 2. KURAL: cpu over%80
+    - alert: HighCpuUsage
+      expr: container_cpu_usage_seconds_total > 0.8
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Uyarı: Yüksek CPU Kullanımı!"
+        description: "Konteynerlerden biri 2 dakikadan uzun süredir %80'in üzerinde işlemci kullanıyor. Sisteme yeni makineler eklenebilir."
