@@ -43,7 +43,7 @@ jobs:
         aws-region: eu-central-1 # Kendi AWS bölgende değiştirmeyi unutma
 
     - name: Update KubeConfig
-      run: aws eks update-kubeconfig --name senin-cluster-adin --region eu-central-1
+      run: aws eks update-kubeconfig --name mern-cluster --region eu-central-1
 
     - name: Apply Kubernetes Configs
       run: kubectl apply -f k8s/deploy.yaml
